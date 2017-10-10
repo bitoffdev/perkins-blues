@@ -1,0 +1,7 @@
+solid 0% 100% #FFF
+delay 500
+solid 50% 100% #000
+delay 500
+solid 0% 100% #00F
+delay 500
+solid 0% 100% #000

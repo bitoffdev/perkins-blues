@@ -26,14 +26,17 @@ def lineParser(line):
     delimiter = ' '
     args = []
     argpos = 0
-    for cchar in line:
+    for cchar in line.strip():
         if cchar == stringIndicator:
             toggleDelimit = not toggleDelimit
-        elif cchar == delimiter && not toggleDelimit:
+        elif cchar == delimiter and not toggleDelimit:
             argpos += 1
         else:
-            args[argpos] += cchar
-
+            try:
+                args[argpos] += cchar
+            except:
+                args.append(cchar)
+    return args
 
 def executeLine(line):
     """
