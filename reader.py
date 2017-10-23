@@ -59,8 +59,9 @@ def executeLine(line, l):
     :return: None
     """
     command = {
-        "solid": lambda args, l: l.set_hex(args[1], args[2], args[3]),
-        "fade": lambda args, l: l.fade(args[1], args[2], args[3], args[4])
+        "solid": lambda args, l: l.set_hex(*args[1:]),
+        "fade": lambda args, l: l.fade(*args[1:]),
+        "rain": lambda args, l: l.rain(*args[1:])
     }
     args = lineParser(line)
     command[args[0]](args, l)

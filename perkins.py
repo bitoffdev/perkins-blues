@@ -65,6 +65,28 @@ class Light(object):
             self.strip.show()
             if completion >= 1: return
 
+    def rain(self, l0, l1, ms, speed):
+        l0 = self.length(l0)
+        l1 = self.length(l1)
+
+        col0 = self.strip.getPixelColor(l0)
+        r0 = (col0 >> 16) % 256
+        g0 = (col0 >> 8) % 256
+        b0 = (col0 % 256)
+
+        start = time.time()
+        colors =[Color(255,0,0),Color(255,69,0),Color(255,219,0), \
+                 Color(0,255,0),Color(0,0,255),Color(255,0,200)]
+        width = (l1-l0) / len(colors)
+        countColors = len(colors)
+
+        while (time.time() - start < int(ms)/1000):
+            offset = (time.time()-start) * int(speed) % countColors
+            for led in range( l0, l1 ):
+                c = ((start - time.time()) - offset) % ((led+1)/width)
+                self.strip.setPixelColor(led, colors[int(c)])
+            self.strip.show()
+
 
 def hexTo256(code):
 
