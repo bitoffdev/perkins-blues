@@ -12,7 +12,7 @@ Class to represent a color
 
 from colorDict import *
 
-class color():
+class Color():
 
     """
     def __init__(self, r, g, b):
@@ -21,6 +21,7 @@ class color():
         self.blue = b
     """
     def __init__(self, value):
+        print(value)
         if ( len(value) == 0 ):
             raise ValueError('Not long enough value')
         if ( value in HexNameDict ):
