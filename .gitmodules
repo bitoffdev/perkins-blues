@@ -1,3 +1,9 @@
 [submodule "rpi_ws281x"]
 	path = rpi_ws281x
 	url = git@github.com:jgarff/rpi_ws281x.git
+[submodule "interfaces/telegram/python-telegram-bot"]
+	path = interfaces/telegram/python-telegram-bot
+	url = git@github.com:python-telegram-bot/python-telegram-bot.git
+[submodule "interfaces/webhook/webpy"]
+	path = interfaces/webhook/webpy
+	url = git@github.com:webpy/webpy.git
