@@ -10,10 +10,10 @@ from telegram.ext import Updater, CommandHandler
 import telegram
 import logging
 import time
+from controller import *
 from color import *
 from solid_animation import *
 from fade_animation import *
-from controller import *
 
 
 # Enable logging
@@ -23,6 +23,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 lastSolid = Color("#000000")
+
+controller = Controller('localhost', 8000)
 
 def color(bot, update, args):
 
@@ -41,22 +43,21 @@ def color(bot, update, args):
         return
 
     #Build SolidAnimation
-    currentTime = time.time()
-    futureTime = time.time() + 1
+    currentTime = time.time()+ .2
+    futureTime = currentTime + 1
     start = 0
     end = 1
     animation = SolidAnimation(currentTime, futureTime, start, end,
                                color.get32bit())
     #Send animation to controller
-
-    update.message.reply_text(text='Attempted Color!')
     lastSolid = color
+    controller.add_animation(animation)
 
-def color2(bot, update, args):
+def fade(bot, update, args):
 
     #Catch not enough args
     if (len(args) == 0):
-        update.message.reply_text('Usage: `/color2 <color> [time]`',
+        update.message.reply_text('Usage: `/fade <color> [time]`',
                                  parse_mode=telegram.ParseMode.MARKDOWN)
         return
 
@@ -64,7 +65,89 @@ def color2(bot, update, args):
     try:
         color = Color(args[0])
     except:
-        update.message.reply_text('Invalid color for `/color2`',
+        update.message.reply_text('Invalid color for `/fade`',
+                               parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Init fade time
+    fadetime = 1
+    if( len(args) >= 2 ):
+        try:
+            fadetime = float(args[1])
+        except:
+            update.message.reply_text('Time must be an decimal value for'
+                        '`/fade`', parse_mode=telegram.ParseMode.MARKDOWN)
+            return
+
+    #Build FadeAnimation
+    startColor = lastSolid
+    currentTime = time.time()
+    futureTime = time.time() + fadetime
+    start = 0 #Lets get the whole strip
+    end = 1
+    animation = FadeAnimation(currentTime, futureTime, start, end,
+                               startColor.get32bit(), color.get32bit())
+    #Send animation to controller
+    lastSolid = color
+    controller.add_animation(animation)
+
+def splash(bot, update, args):
+
+    #Catch not enough args
+    if (len(args) < 2):
+        update.message.reply_text('Usage: `/splash <color> <epoch (0-1)> [time]`',
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Construct color
+    try:
+        color = Color(args[0])
+    except:
+        update.message.reply_text('Invalid color for `/fade`',
+                               parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    try:
+        epoch = float(args[1])
+    except:
+        #Error message
+        return
+
+    #Init fade time
+    fadetime = 1
+    if( len(args) > 2 ):
+        try:
+            fadetime = float(args[2])
+        except:
+            update.message.reply_text('Time must be an decimal value for'
+                        '`/fade`', parse_mode=telegram.ParseMode.MARKDOWN)
+            return
+
+    #Build splashAnimation
+    startColor = lastSolid
+    currentTime = time.time()
+    futureTime = time.time() + fadetime
+    start = 0 #Lets get the whole strip
+    end = 1
+    animation = SplashAnimation(currentTime, futureTime, start, end, epoch,
+                               startColor.get32bit(), color.get32bit())
+    #Send animation to controller
+    lastSolid = color
+    controller.add_animation(animation)
+
+def wipe(bot, update, args):
+
+    #Catch not enough args
+    if (len(args) == 0):
+        update.message.reply_text('Usage: `/wipe <color> [time]`',
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Construct color
+    try:
+        color = Color(args[0])
+    except:
+        update.message.reply_text('Invalid color for `/wipe`',
                                parse_mode=telegram.ParseMode.MARKDOWN)
         return
 
@@ -75,24 +158,60 @@ def color2(bot, update, args):
             fadetime = float(arg[1])
         except:
             update.message.reply_text('Time must be an decimal value for'
-                        '`/color2`', parse_mode=telegram.ParseMode.MARKDOWN)
+                        '`/wipe`', parse_mode=telegram.ParseMode.MARKDOWN)
             return
 
-    #Build FadeAnimation
+    #Build WipeAnimation
     startColor = lastSolid
     currentTime = time.time()
     futureTime = time.time() + fadetime
     start = 0 #Lets get the whole strip
     end = 1
-    animation = FadeAnimation(currentTime, futureTime, start, end,
-                               startColor.get32bit(), lastColor.get32bit())
+    animation = WipeAnimation(currentTime, futureTime, start, end,
+                               startColor.get32bit(), color.get32bit())
     #Send animation to controller
-    update.message.reply_text(text='Attempted Color2!')
+    lastSolid = color
+    controller.add_animation(animation)
 
 
+def pong(bot, update, args):
 
-def rainbow(bot, update):
-    update.message.reply_text('Attempted Rainbow!')
+    #Catch not enough args
+    if (len(args) == 0):
+        update.message.reply_text('Usage: `/rain [time]`',
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+    
+    #Construct color
+    try:
+        color = Color(args[0])
+    except:
+        update.message.reply_text('Invalid color for `/wipe`',
+                               parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Init rain time
+    fadetime = 10
+    if( len(args) > 0 ):
+        try:
+            fadetime = float(args[1])
+        except:
+            update.message.reply_text('Time must be an decimal value for'
+                        '`/fade`', parse_mode=telegram.ParseMode.MARKDOWN)
+            return
+
+    #Build RainbowAnimation
+    startColor = lastSolid
+    currentTime = time.time()
+    futureTime = time.time() + fadetime
+    start = 0 #Lets get the whole strip
+    end = 1
+    animation = PongAnimation(currentTime, futureTime, start, end,
+                               startColor.get32bit(), color.get32bit())
+    #Send animation to controller
+    controller.add_animation(animation)
+
+
 
 def help(bot, update):
     help_message = (
@@ -118,7 +237,10 @@ def main():
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("color", color, pass_args=True))
-    dp.add_handler(CommandHandler("rainbow", rainbow, pass_args=True))
+    dp.add_handler(CommandHandler("fade", fade, pass_args=True))
+    dp.add_handler(CommandHandler("pong", pong, pass_args=True))
+    dp.add_handler(CommandHandler("splash", splash, pass_args=True))
+    dp.add_handler(CommandHandler("wipe", wipe, pass_args=True))
     dp.add_handler(CommandHandler("help", help))
 
 
