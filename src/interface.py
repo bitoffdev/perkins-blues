@@ -10,7 +10,7 @@ from telegram.ext import Updater, CommandHandler
 import telegram
 import logging
 import time
-from controller import *
+from controller_proxy import *
 from color import *
 from solid_animation import *
 from fade_animation import *
@@ -29,7 +29,7 @@ lastSolid = Color("#000000")
 
 controller = Controller('localhost', 8000)
 
-def color(bot, update, args):
+def solid(bot, update, args):
 
     #Catch not enough args
     if (len(args) == 0):
@@ -181,7 +181,7 @@ def pong(bot, update, args):
 
     #Catch not enough args
     if (len(args) == 0):
-        update.message.reply_text('Usage: `/rain [time]`',
+        update.message.reply_text('Usage: `/pong <color> [time]`',
                                  parse_mode=telegram.ParseMode.MARKDOWN)
         return
 
@@ -189,18 +189,18 @@ def pong(bot, update, args):
     try:
         color = Color(args[0])
     except:
-        update.message.reply_text('Invalid color for `/wipe`',
+        update.message.reply_text('Invalid color for `/pong`',
                                parse_mode=telegram.ParseMode.MARKDOWN)
         return
 
     #Init rain time
     fadetime = 10
-    if( len(args) > 0 ):
+    if( len(args) > 1 ):
         try:
             fadetime = float(args[1])
         except:
             update.message.reply_text('Time must be an decimal value for'
-                        '`/fade`', parse_mode=telegram.ParseMode.MARKDOWN)
+                        '`/pong`', parse_mode=telegram.ParseMode.MARKDOWN)
             return
 
     #Build RainbowAnimation
@@ -212,6 +212,7 @@ def pong(bot, update, args):
     animation = PongAnimation(currentTime, futureTime, start, end,
                                startColor.get32bit(), color.get32bit())
     #Send animation to controller
+    lastSolid = color
     controller.add_animation(animation)
 
 
@@ -239,7 +240,7 @@ def main():
     dp = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("color", color, pass_args=True))
+    dp.add_handler(CommandHandler("color", solid, pass_args=True))
     dp.add_handler(CommandHandler("fade", fade, pass_args=True))
     dp.add_handler(CommandHandler("pong", pong, pass_args=True))
     dp.add_handler(CommandHandler("splash", splash, pass_args=True))

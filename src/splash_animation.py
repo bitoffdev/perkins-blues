@@ -40,7 +40,7 @@ class SplashAnimation(animation.Animation):
         lerp = (time - self.get_start_time()) \
                 / (self.get_stop_time() - self.get_start_time())
         lerp = max(0, min(1, lerp))
-        math = (  * abs(pos - epoch_pos)) ** (lerp * 3) 
+        math = ( abs(pos - epoch_pos)) ** (lerp * 3) 
         if (math > .1):
             return start_color;
         else:
