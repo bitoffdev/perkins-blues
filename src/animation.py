@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod #, abstract_attribute
+from abc import ABC, abstractmethod
 
 class Animation(ABC):
 
@@ -21,7 +21,7 @@ class Animation(ABC):
         :rtype: int
         """
         return 0x000000
-    
+
     def get_start_time(self):
         return self.__start_time
 
