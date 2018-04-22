@@ -5,10 +5,12 @@ from fade_animation import FadeAnimation
 class Controller:
 
     def __init__(self, host, port):
+        self.host = host
+        self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def _send(self, msg):
-        self.sock.connect((host, port))
+        self.sock.connect((self.host, self.port))
         totalsent = 0
         msgsize = len(msg)
         print("Sending %d bytes"%msgsize)
