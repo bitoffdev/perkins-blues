@@ -7,8 +7,14 @@ Python Telegram bot for the Perkins Light Project
 """
 
 from telegram.ext import Updater, CommandHandler
+import telegram
 import logging
+import time
+from color import *
+from solid_animation import *
+from fade_animation import *
 from controller import *
+
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -16,11 +22,73 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+lastSolid = Color("#000000")
 
 def color(bot, update, args):
-    color = args[0]
+
+    #Catch not enough args
+    if (len(args) == 0):
+        update.message.reply_text('Usage: `/color <color>`',
+                                  parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Construct color
+    try:
+        color = Color(args[0])
+    except:
+        update.message.reply_text('Invalid color for `/color`',
+                                parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Build SolidAnimation
+    currentTime = time.time()
+    futureTime = time.time() + 1
+    start = 0
+    end = 1
+    animation = SolidAnimation(currentTime, futureTime, start, end,
+                               color.get32bit())
+    #Send animation to controller
+
     update.message.reply_text(text='Attempted Color!')
-    #Create a color object and pass to handler
+    lastSolid = color
+
+def color2(bot, update, args):
+
+    #Catch not enough args
+    if (len(args) == 0):
+        update.message.reply_text('Usage: `/color2 <color> [time]`',
+                                 parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Construct color
+    try:
+        color = Color(args[0])
+    except:
+        update.message.reply_text('Invalid color for `/color2`',
+                               parse_mode=telegram.ParseMode.MARKDOWN)
+        return
+
+    #Init fade time
+    fadetime = 1
+    if( len(args) >= 2 ):
+        try:
+            fadetime = float(arg[1])
+        except:
+            update.message.reply_text('Time must be an decimal value for'
+                        '`/color2`', parse_mode=telegram.ParseMode.MARKDOWN)
+            return
+
+    #Build FadeAnimation
+    startColor = lastSolid
+    currentTime = time.time()
+    futureTime = time.time() + fadetime
+    start = 0 #Lets get the whole strip
+    end = 1
+    animation = FadeAnimation(currentTime, futureTime, start, end,
+                               startColor.get32bit(), lastColor.get32bit())
+    #Send animation to controller
+    update.message.reply_text(text='Attempted Color2!')
+
 
 
 def rainbow(bot, update):
