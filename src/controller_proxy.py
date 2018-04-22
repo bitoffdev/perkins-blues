@@ -2,15 +2,13 @@
 import socket, pickle, time
 from fade_animation import FadeAnimation
 
-MSGLEN = 316
-
-class ControllerProxy:
+class Controller:
 
     def __init__(self, host, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((host, port))
 
     def _send(self, msg):
+        self.sock.connect((host, port))
         totalsent = 0
         msgsize = len(msg)
         print("Sending %d bytes"%msgsize)
@@ -27,9 +25,18 @@ class ControllerProxy:
 
 if __name__ == "__main__":
     import sys
-    control = ControllerProxy(sys.argv[1], int(sys.argv[2]))
+    control = Controller(sys.argv[1], int(sys.argv[2]))
+
+    start = time.time()
     
-    a1 = FadeAnimation(time.time() + 1,
-            time.time() + 8,
-            0.3, 0.8, 0x00ff00, 0x0000ff)
+    a1 = FadeAnimation(start + 1, start + 6,
+            0.0, 0.5, 0x00ff00, 0x0000ff)
     control.add_animation(a1)
+
+    a2 = FadeAnimation(start + 6, start + 10,
+            0.0, 0.5, 0xff0000, 0x00ffff)
+    control.add_animation(a2)
+
+    a3 = FadeAnimation(start + 1, start + 4,
+            0.5, 1.0, 0xff0000, 0x00ffff)
+    control.add_animation(a3)

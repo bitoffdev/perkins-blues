@@ -1,31 +1,4 @@
-# import controller, fade_animation, time
-# from fade_animation import FadeAnimation
-# import solid_animation
-# from threading import Thread
-# 
-# control = controller.Controller()
-# 
-# def test(control):
-#     time.sleep(0.5)
-#     a1 = FadeAnimation(time.time() + 1,
-#             time.time() + 8,
-#             0.3, 0.8, 0x00ff00, 0x0000ff)
-#     a2 = FadeAnimation(time.time() + 4,
-#             time.time() + 8,
-#             0.0, 0.3, 0x30f300, 0xff0044)
-#     a3 = FadeAnimation(time.time() + 1,
-#             time.time() + 4,
-#             0.0, 0.3, 0xffff00, 0x0000ff)
-#     control.add_animation(a1)
-#     control.add_animation(a2)
-#     control.add_animation(a3)
-# 
-# p = Thread(target=test, args=(control,))
-# p.start()
-# 
-# control.spin()
-
-import socket, pickle, controller
+import socket, pickle, controller, sys
 from threading import Thread
 
 class InterfaceProxy:
@@ -37,7 +10,7 @@ class InterfaceProxy:
         # bind the socket to a public host, and a well-known port
         serversocket.bind((host, port))
         # queue up to 5 requests
-        serversocket.listen(5)
+        serversocket.listen(20)
 
         while True:
             # establish a connection
@@ -66,13 +39,8 @@ class InterfaceProxy:
         self.control.add_animation(obj)
 
 if __name__ == "__main__":
-    import sys
-
     control = controller.Controller()
-    # InterfaceProxy(sys.argv[1], int(sys.argv[2]))
-    # p = Thread(target=InterfaceProxy, args=(sys.argv[1],int(sys.argv[2])))
-    # p.start()
-    # control.spin()
-    p = Thread(target=control.spin)
-    p.start()
-    InterfaceProxy(sys.argv[1], int(sys.argv[2]), control)
+    t1 = Thread(target=InterfaceProxy, args=(sys.argv[1],int(sys.argv[2]), control))
+    t1.start()
+    t2 = Thread(target=control.spin)
+    t2.start()

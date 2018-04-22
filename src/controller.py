@@ -48,13 +48,14 @@ class Controller:
         if not bucket_index in self.__animations:
             self.__animations[bucket_index] = []
         self.__animations[bucket_index].append(_animation)
+        print("Animations:", self.__animations)
 
     def get_animations(self, time):
         result = []
         t = int(time)
-        print(self.__animations)
         if t in self.__animations:
             result = self.__animations.pop(t)
+            print("Animations:", self.__animations)
         return result
 
     def spin_once(self, leds, ws, channel):
@@ -65,11 +66,17 @@ class Controller:
         self.__active.extend(self.get_animations(now))
 
         # Call each active animation
-        for a in self.__active:
-            for i in range(int(a.get_start_pos()*LED_COUNT),
-                    int(a.get_stop_pos()*LED_COUNT)):
-                col = a.get_color(now, i * 1. / LED_COUNT)
-                ws.ws2811_led_set(channel, i, col)
+        i = 0
+        while i < len(self.__active):
+            a = self.__active[i]
+            if a.get_stop_time() < time.time():
+                self.__active.pop(i)
+            else:
+                for i in range(int(a.get_start_pos()*LED_COUNT),
+                        int(a.get_stop_pos()*LED_COUNT)):
+                    col = a.get_color(now, i * 1. / LED_COUNT)
+                    ws.ws2811_led_set(channel, i, col)
+                i += 1
 
         # Send the LED color data to the hardware.
         resp = ws.ws2811_render(leds)
@@ -118,7 +125,6 @@ class Controller:
         # after library is initialized.
         try:
             while True:
-                print("spin")
                 self.spin_once(leds, ws, channel)
                 # Delay for a small period of time.
                 time.sleep(0.05)
