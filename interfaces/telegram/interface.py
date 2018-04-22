@@ -26,6 +26,15 @@ def color(bot, update, args):
 def rainbow(bot, update):
     update.message.reply_text('Attempted Rainbow!')
 
+def help(bot, update):
+    help_message = (
+        'This bot will allow you to control the Perkins Light Project. '
+        'I have a set of commands that will allow you to manipulate the PLP.'
+        'These should he shown by telegram. However, /color [hex code] is a'
+        'great way to start!'
+    )
+    update.message.reply_text(help_message)
+
 
 def error(bot, update, error):
     """Log Errors caused by Updates."""
@@ -41,7 +50,9 @@ def main():
 
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("color", color, pass_args=True))
-    dp.add_handler(CommandHandler("rainbow", rainbow))
+    dp.add_handler(CommandHandler("rainbow", rainbow, pass_args=True))
+    dp.add_handler(CommandHandler("help", help))
+
 
     # log all errors
     dp.add_error_handler(error)
