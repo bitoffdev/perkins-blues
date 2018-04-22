@@ -25,7 +25,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-lastSolid = Color("#000000")
+lastSolid = Color("black")
 
 controller = Controller('localhost', 8000)
 
