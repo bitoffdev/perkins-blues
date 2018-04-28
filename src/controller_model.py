@@ -71,12 +71,12 @@ class Controller:
                 self.__active.pop(i)
             else:
                 a_size = a.get_stop_pos() - a.get_start_pos()
-                for i in range(int(a.get_start_pos()*LED_COUNT),
+                for led in range(int(a.get_start_pos()*LED_COUNT),
                         int(a.get_stop_pos()*LED_COUNT)):
-                    abs_pos = i * 1. / LED_COUNT
+                    abs_pos = led * 1. / LED_COUNT
                     rel_pos = (abs_pos - a.get_start_pos()) / a_size
                     col = a.get_color(now, rel_pos)
-                    ws.ws2811_led_set(channel, i, col)
+                    ws.ws2811_led_set(channel, led, col)
                 i += 1
 
         # Send the LED color data to the hardware.
