@@ -70,9 +70,12 @@ class Controller:
             if a.get_stop_time() < time.time():
                 self.__active.pop(i)
             else:
+                a_size = a.get_stop_pos() - a.get_start_pos()
                 for i in range(int(a.get_start_pos()*LED_COUNT),
                         int(a.get_stop_pos()*LED_COUNT)):
-                    col = a.get_color(now, i * 1. / LED_COUNT)
+                    abs_pos = i * 1. / LED_COUNT
+                    rel_pos = (abs_pos - a.get_start_pos()) / a_size
+                    col = a.get_color(now, rel_pos)
                     ws.ws2811_led_set(channel, i, col)
                 i += 1
 
