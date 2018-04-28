@@ -45,3 +45,7 @@ class Animation(ABC):
 
     def set_stop_pos(self, pos):
         self.__stop_pos = pos
+
+if __name__ == "__main__":
+    import sys
+    sys.stderr.write("Do not call this script!\n")

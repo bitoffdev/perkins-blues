@@ -1,7 +1,6 @@
-import socket, pickle, controller, sys
-from threading import Thread
+import socket, pickle
 
-class InterfaceProxy:
+class Interface:
     def __init__(self, host, port, control):
         self.control = control
 
@@ -39,8 +38,5 @@ class InterfaceProxy:
         self.control.add_animation(obj)
 
 if __name__ == "__main__":
-    control = controller.Controller()
-    t1 = Thread(target=InterfaceProxy, args=(sys.argv[1],int(sys.argv[2]), control))
-    t1.start()
-    t2 = Thread(target=control.spin)
-    t2.start()
+    import sys
+    sys.stderr.write("Do not call this script!\n")

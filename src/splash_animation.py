@@ -45,3 +45,7 @@ class SplashAnimation(animation.Animation):
             return start_color;
         else:
             return stop_color;
+
+if __name__ == "__main__":
+    import sys
+    sys.stderr.write("Do not call this script!\n")

@@ -45,3 +45,7 @@ class WipeAnimation(animation.Animation):
                 self.__start_hsv[1] + (self.__stop_hsv[1]-self.__start_hsv[1])*lerp,
                 self.__start_hsv[2] + (self.__stop_hsv[2]-self.__start_hsv[2])*lerp)
         return colorpack(colorsys.hsv_to_rgb(*curr))
+
+if __name__ == "__main__":
+    import sys
+    sys.stderr.write("Do not call this script!\n")

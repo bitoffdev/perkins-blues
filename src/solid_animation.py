@@ -27,3 +27,7 @@ class SolidAnimation(animation.Animation):
         :return: 24-bit integer RGB color
         """
         return self.__color
+
+if __name__ == "__main__":
+    import sys
+    sys.stderr.write("Do not call this script!\n")
