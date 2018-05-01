@@ -69,6 +69,12 @@ class Controller:
             a = self.__active[i]
             if a.get_stop_time() < time.time():
                 self.__active.pop(i)
+            elif a.get_start_time() > time.time():
+                # skip if the animation should not have started yet
+                #
+                # this occurs because animations are set as active by second,
+                # not by exact timestamp
+                continue
             else:
                 a_size = a.get_stop_pos() - a.get_start_pos()
                 for led in range(int(a.get_start_pos()*LED_COUNT),
